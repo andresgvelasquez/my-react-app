@@ -1,8 +1,33 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2'; // Asegúrate de importar Bar
 import BoxplotChart from './BoxplotChart';
+import Heatmap from './Heatmap';
+import './UploadForm.css'; // Asegúrate de importar el archivo CSS para que los estilos se apliquen
 
-const DataVisualization = ({ histogramData, boxplotData }) => {
+const DataVisualization = ({ histogramData, boxplotData, heatmapData }) => {
+
+  // Procesa los datos del heatmap
+  let processedHeatmapData;
+  if (typeof heatmapData === 'string') {
+    try {
+      processedHeatmapData = JSON.parse(heatmapData);
+    } catch (e) {
+      console.error('Error parsing heatmap data:', e);
+      return <p>Error parsing heatmap data.</p>;
+    }
+  } else {
+    processedHeatmapData = heatmapData;
+  }
+
+  const features = Object.keys(processedHeatmapData);
+  const heatmapDataArray = features.flatMap((feature, x) =>
+    features.map((otherFeature, y) => ({
+      x,
+      y,
+      value: processedHeatmapData[feature][otherFeature]
+    }))
+  );
+
   if (!histogramData) {
     return <p>No histogram data available.</p>;
   }
@@ -37,7 +62,7 @@ const DataVisualization = ({ histogramData, boxplotData }) => {
   return (
     <div className="charts-container">
       <div className="chart">
-        <h4>Product Distribution [Thousands of barrels]</h4>
+        <h4 className="section-title">Product Distribution [Thousands of barrels]</h4>
         <Bar
           data={histogramChartData}
           options={{
@@ -60,14 +85,14 @@ const DataVisualization = ({ histogramData, boxplotData }) => {
                 type: 'category',
                 title: {
                   display: true,
-                  text: 'Product', // Cambiar aquí el nombre del eje X
+                  text: 'Product',
                 },
                 ticks: {
                   autoSkip: false,
                   maxRotation: 45,
                   minRotation: 45,
                   callback: function(value) {
-                    return value.length > 10 ? value.slice(0, 10) + '...' : value; // Ajustar si es necesario
+                    return value.length > 10 ? value.slice(0, 10) + '...' : value;
                   }
                 },
                 grid: {
@@ -78,14 +103,21 @@ const DataVisualization = ({ histogramData, boxplotData }) => {
                 type: 'linear',
                 title: {
                   display: true,
-                  text: 'Frequency', // Cambiar aquí el nombre del eje Y
+                  text: 'Frequency',
                 },
                 beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return value.toLocaleString(); // Formatea los números del eje Y
+                  }
+                },
+                suggestedMax: Math.max(...dataValues) * 1.1, // Ajuste máximo del eje Y
+                min: 0 // Asegura que el eje Y no comience en valores negativos
               },
             },
             layout: {
               padding: {
-                bottom: 60, // Ajustar margen inferior si es necesario
+                bottom: 60,
               },
             },
           }}
@@ -93,7 +125,13 @@ const DataVisualization = ({ histogramData, boxplotData }) => {
       </div>
 
       <div className="chart">
+        <h4 className="section-title">Boxplot of Products</h4>
         <BoxplotChart data={boxplotData} />
+      </div>
+
+      <div className="chart">
+        <h4 className="section-title">Heatmap of Product Comparisons</h4>
+        <Heatmap data={heatmapDataArray} />
       </div>
     </div>
   );

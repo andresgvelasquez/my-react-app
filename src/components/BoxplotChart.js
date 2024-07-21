@@ -91,10 +91,7 @@ const BoxplotChart = ({ data }) => {
   }, [data]);
 
   return (
-    <div>
-      <h4>Product Boxplot [Thousands of barrels]</h4>
-      <svg ref={svgRef} width="100%" height="400px"></svg>
-    </div>
+    <svg ref={svgRef} width="100%" height="400px"></svg>
   );
 };
 

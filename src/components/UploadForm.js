@@ -167,6 +167,7 @@ const UploadForm = () => {
             <DataVisualization
               histogramData={uploadedData.histogram_data}
               boxplotData={uploadedData.boxplot_data}
+              heatmapData={uploadedData.heatmap_data}
             />
           </div>
         </div>
