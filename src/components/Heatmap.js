@@ -6,14 +6,29 @@ const Heatmap = ({ data }) => {
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
-    const width = svg.attr('width');
-    const height = svg.attr('height');
+    const margin = { top: 60, right: 60, bottom: 80, left: 80 }; // Aumenta el margen derecho
     const cellSize = 50; // Tamaño de cada celda del heatmap
+    const width = 6 * cellSize + margin.left + margin.right; // Incrementa el ancho
+    const height = 6 * cellSize + margin.top + margin.bottom; // Incrementa la altura
 
     // Limpia el contenido del SVG
     svg.selectAll('*').remove();
 
-    // Configura la escala de colores
+    // Procesa los datos para obtener etiquetas y valores
+    const xLabels = Array.from(new Set(data.map(d => d.x)));
+    const yLabels = Array.from(new Set(data.map(d => d.y)));
+
+    // Configura escalas y ejes
+    const xScale = d3.scaleBand()
+      .domain(xLabels) // Etiquetas en lugar de índices
+      .range([0, width - margin.left - margin.right])
+      .padding(0.05);
+
+    const yScale = d3.scaleBand()
+      .domain(yLabels) // Etiquetas en lugar de índices
+      .range([height - margin.top - margin.bottom, 0])
+      .padding(0.05);
+
     const colorScale = d3.scaleSequential(d3.interpolateViridis)
       .domain([d3.min(data, d => d.value), d3.max(data, d => d.value)]);
 
@@ -22,30 +37,41 @@ const Heatmap = ({ data }) => {
       .data(data)
       .enter()
       .append('rect')
-      .attr('x', d => d.x * cellSize)
-      .attr('y', d => d.y * cellSize)
-      .attr('width', cellSize)
-      .attr('height', cellSize)
+      .attr('x', d => xScale(d.x) + margin.left)
+      .attr('y', d => yScale(d.y) + margin.top)
+      .attr('width', xScale.bandwidth())
+      .attr('height', yScale.bandwidth())
       .style('fill', d => colorScale(d.value))
       .style('stroke', '#fff');
 
-    // Agrega etiquetas de texto (opcional)
+    // Agrega etiquetas de texto
     svg.selectAll('text')
       .data(data)
       .enter()
       .append('text')
-      .attr('x', d => d.x * cellSize + cellSize / 2)
-      .attr('y', d => d.y * cellSize + cellSize / 2)
+      .attr('x', d => xScale(d.x) + margin.left + xScale.bandwidth() / 2)
+      .attr('y', d => yScale(d.y) + margin.top + yScale.bandwidth() / 2)
       .attr('dy', '.35em')
       .attr('text-anchor', 'middle')
       .text(d => d.value.toFixed(2))
       .style('fill', '#000')
-      .style('font-size', '12px');
+      .style('font-size', '12px'); // Ajusta el tamaño de la fuente si es necesario
+
+    // Agrega ejes X e Y
+    svg.append('g')
+      .attr('transform', `translate(${margin.left},${height - margin.bottom})`)
+      .call(d3.axisBottom(xScale))
+      .attr('class', 'x-axis');
+
+    svg.append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`)
+      .call(d3.axisLeft(yScale))
+      .attr('class', 'y-axis');
 
   }, [data]);
 
   return (
-    <svg ref={svgRef} width="500" height="500"></svg>
+    <svg ref={svgRef} width="100%" height="100%" viewBox={`0 0 ${6 * 50 + 80 + 60} ${6 * 50 + 60 + 80}`}></svg> // Ajusta el viewBox
   );
 };
 

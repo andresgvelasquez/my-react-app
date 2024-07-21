@@ -1,12 +1,11 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2'; // Asegúrate de importar Bar
+import { Bar } from 'react-chartjs-2';
 import BoxplotChart from './BoxplotChart';
 import Heatmap from './Heatmap';
-import './UploadForm.css'; // Asegúrate de importar el archivo CSS para que los estilos se apliquen
+import './UploadForm.css';
 
 const DataVisualization = ({ histogramData, boxplotData, heatmapData }) => {
 
-  // Procesa los datos del heatmap
   let processedHeatmapData;
   if (typeof heatmapData === 'string') {
     try {
@@ -22,8 +21,8 @@ const DataVisualization = ({ histogramData, boxplotData, heatmapData }) => {
   const features = Object.keys(processedHeatmapData);
   const heatmapDataArray = features.flatMap((feature, x) =>
     features.map((otherFeature, y) => ({
-      x,
-      y,
+      x: feature,
+      y: otherFeature,
       value: processedHeatmapData[feature][otherFeature]
     }))
   );
@@ -62,66 +61,69 @@ const DataVisualization = ({ histogramData, boxplotData, heatmapData }) => {
   return (
     <div className="charts-container">
       <div className="chart">
-        <h4 className="section-title">Product Distribution [Thousands of barrels]</h4>
-        <Bar
-          data={histogramChartData}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: false,
-              },
-              tooltip: {
-                callbacks: {
-                  label: function (context) {
-                    return `Category: ${context.label}, Frequency: ${context.raw}`;
+        <h4 className="section-title">Product Distribution</h4>
+        <div className="bar-chart-wrapper">
+          <Bar
+            data={histogramChartData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return `Category: ${context.label}, Frequency: ${context.raw}`;
+                    },
                   },
                 },
               },
-            },
-            scales: {
-              x: {
-                type: 'category',
-                title: {
-                  display: true,
-                  text: 'Product',
+              scales: {
+                x: {
+                  type: 'category',
+                  title: {
+                    display: true,
+                    text: 'Product [Thousands of barrels]',
+                  },
+                  ticks: {
+                    autoSkip: false,
+                    maxRotation: 45,
+                    minRotation: 45,
+                    callback: function(value) {
+                      return value.length > 10 ? value.slice(0, 10) + '...' : value;
+                    }
+                  },
+                  grid: {
+                    display: false,
+                  },
                 },
-                ticks: {
-                  autoSkip: false,
-                  maxRotation: 45,
-                  minRotation: 45,
-                  callback: function(value) {
-                    return value.length > 10 ? value.slice(0, 10) + '...' : value;
-                  }
-                },
-                grid: {
-                  display: false,
+                y: {
+                  type: 'linear',
+                  title: {
+                    display: true,
+                    text: 'Frequency',
+                  },
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function(value) {
+                      return value.toLocaleString();
+                    }
+                  },
+                  suggestedMax: Math.max(...dataValues) * 1.1,
+                  min: 0,
+                  maxTicksLimit: 10,
                 },
               },
-              y: {
-                type: 'linear',
-                title: {
-                  display: true,
-                  text: 'Frequency',
+              layout: {
+                padding: {
+                  bottom: 20,
                 },
-                beginAtZero: true,
-                ticks: {
-                  callback: function(value) {
-                    return value.toLocaleString(); // Formatea los números del eje Y
-                  }
-                },
-                suggestedMax: Math.max(...dataValues) * 1.1, // Ajuste máximo del eje Y
-                min: 0 // Asegura que el eje Y no comience en valores negativos
               },
-            },
-            layout: {
-              padding: {
-                bottom: 60,
-              },
-            },
-          }}
-        />
+            }}
+          />
+        </div>
       </div>
 
       <div className="chart">
@@ -130,8 +132,10 @@ const DataVisualization = ({ histogramData, boxplotData, heatmapData }) => {
       </div>
 
       <div className="chart">
-        <h4 className="section-title">Heatmap of Product Comparisons</h4>
-        <Heatmap data={heatmapDataArray} />
+        <h4 className="section-title">Heatmap</h4>
+        <div className="heatmap-container">
+          <Heatmap data={heatmapDataArray} />
+        </div>
       </div>
     </div>
   );

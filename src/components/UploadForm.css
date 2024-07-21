@@ -114,15 +114,16 @@
   width: 100%; /* Asegúrate de que ocupe todo el ancho disponible */
   margin: 20px auto;
   max-width: 1200px; /* Tamaño máximo para la pantalla */
+  box-sizing: border-box;
 }
 
 /* Estilo para cada gráfico */
 .chart {
-  flex: 1;
-  margin: 0 10px;
-  max-width: 100%; /* Permite que el gráfico se ajuste al contenedor */
-  height: auto; /* Mantiene la proporción del gráfico */
-  max-height: 500px; /* Ajusta la altura máxima según sea necesario */
+  flex: 1 1 30%; /* Ajusta el tamaño de los gráficos */
+  margin: 10px;
+  max-width: 30%; /* Permite que el gráfico se ajuste al contenedor */
+  height: auto; /* Ajusta la altura automáticamente para evitar gráficos alargados */
+  min-height: 400px; /* Fija una altura mínima para evitar gráficos demasiado pequeños */
   overflow: hidden; /* Oculta el contenido que se desborda */
 }
 
@@ -145,21 +146,25 @@
 }
 
 /* Estilo para el contenedor del heatmap */
+/* Estilo para el contenedor del heatmap */
 .heatmap-container {
-  width: 100%; /* Asegúrate de que ocupe todo el ancho disponible */
-  height: 300px; /* Ajusta la altura máxima según sea necesario */
-  position: relative; /* Necesario para que el SVG se ajuste correctamente */
-  overflow: hidden; /* Oculta el contenido que se desborda */
-  padding: 10px; /* Agrega un pequeño padding si es necesario */
-  box-sizing: border-box; /* Incluye padding y border en el ancho total del contenedor */
-  display: flex; /* Asegura que el SVG ocupe el espacio disponible */
-  justify-content: center; /* Centra el contenido horizontalmente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 110%;
+  height: auto; /* Ajusta la altura automáticamente si es necesario */
+  min-height: 825px; /* Altura mínima para evitar que se corte */
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: auto; /* Permite el desplazamiento si el contenido es más grande */
+  margin-top: -230px; /* Ajusta la posición vertical hacia abajo para alinearlo con el número 200 */
 }
 
 /* Ajustes adicionales para el SVG del heatmap */
 .heatmap-container svg {
-  width: 100%; /* Asegúrate de que el SVG ocupe todo el ancho del contenedor */
-  height: 100%; /* Asegúrate de que el SVG ocupe toda la altura del contenedor */
+  width: 110%; /* Asegúrate de que el SVG ocupe todo el ancho del contenedor */
+  height: auto; /* Ajusta la altura para mantener la relación de aspecto */
+  max-width: 110%; /* Asegura que el SVG no se expanda más allá de su contenedor */
   object-fit: contain; /* Ajusta el contenido del SVG dentro del contenedor sin distorsión */
 }
 
@@ -169,4 +174,12 @@
   text-anchor: middle; /* Centra horizontalmente el texto */
   dominant-baseline: central; /* Centra verticalmente el texto */
   fill: #000; /* Color del texto, ajusta según el fondo del heatmap */
+}
+
+/* Estilo para el contenedor del gráfico de barras */
+.bar-chart-wrapper {
+  width: 100%;
+  max-width: 100%; /* Asegura que no se expanda más allá de su contenedor */
+  height: 400px; /* Altura fija para evitar desbordamiento */
+  overflow: hidden; /* Oculta el contenido que se desborda */
 }
