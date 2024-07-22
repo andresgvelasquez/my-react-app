@@ -169,9 +169,61 @@ const UploadForm = () => {
 
     return (
       <div className="scatter-plot-container">
-        <h2 className="section-title">Predictions Scatter Plot</h2>
         <ScatterPlot data={scatterData} />
       </div>
+    );
+  };
+
+  const renderProfitTable = () => {
+    if (!uploadedData || !uploadedData.profit_table) {
+      return <p>No profit table data available.</p>;
+    }
+
+    let profitTable;
+    try {
+      // Convertir profit_table a un objeto usando JSON.parse
+      profitTable = JSON.parse(uploadedData.profit_table);
+    } catch (error) {
+      console.error('Error parsing profit table data:', error);
+      return <p>Error parsing profit table data.</p>;
+    }
+
+    // Asegúrate de que cada valor se maneje correctamente y se convierta en cadena de texto cuando sea necesario
+    const averageMean = profitTable.average_mean ? profitTable.average_mean.toFixed(2) : 'N/A';
+    const confidenceIntervalInferior = profitTable.intervalo_confianza?.inferior ? profitTable.intervalo_confianza.inferior.toFixed(2) : 'N/A';
+    const confidenceIntervalSuperior = profitTable.intervalo_confianza?.superior ? profitTable.intervalo_confianza.superior.toFixed(2) : 'N/A';
+    const percentageLosses = typeof profitTable.porcentaje_perdidas === 'string'
+    ? profitTable.porcentaje_perdidas.substring(0, 4) // O usa `slice(0, 4)`
+    : 'N/A';
+
+
+    return (
+      <table className="styled-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Average Mean</td>
+            <td>${averageMean}</td>
+          </tr>
+          <tr>
+            <td>Confidence Interval Inferior</td>
+            <td>${confidenceIntervalInferior}</td>
+          </tr>
+          <tr>
+            <td>Confidence Interval Superior</td>
+            <td>${confidenceIntervalSuperior}</td>
+          </tr>
+          <tr>
+            <td>% Risk</td>
+            <td>{percentageLosses}</td>
+          </tr>
+        </tbody>
+      </table>
     );
   };
 
@@ -230,8 +282,10 @@ const UploadForm = () => {
           </div>
           <h2 className="section-title">Volume Predictions</h2>
           {renderVolumePredictions()}
-          {/* Solo debe haber una sección para el gráfico de dispersión */}
+          <h2 className="section-title">Predictions Scatter Plot</h2>
           {renderScatterPlot()}
+          <h2 className="section-title">Profit Table</h2>
+          {renderProfitTable()}
         </div>
       )}
     </div>
