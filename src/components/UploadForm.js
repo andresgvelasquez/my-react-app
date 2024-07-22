@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './UploadForm.css';
 import DataVisualization from './DataVisualization';
+import ScatterPlot from './ScatterPlot';
 
 const UploadForm = () => {
   const [file, setFile] = useState(null);
   const [uploadedData, setUploadedData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -16,6 +18,8 @@ const UploadForm = () => {
       alert('Please select a file first!');
       return;
     }
+
+    setLoading(true);
 
     const formData = new FormData();
     formData.append('file', file);
@@ -31,6 +35,8 @@ const UploadForm = () => {
     } catch (error) {
       console.error('Error uploading file:', error);
       alert('Error uploading file.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,6 +46,10 @@ const UploadForm = () => {
     }
 
     const headers = Object.keys(data);
+    if (headers.length === 0) {
+      return <p>No data available to display.</p>;
+    }
+
     const numRows = Object.keys(data[headers[0]]).length;
     const rows = [];
     for (let i = 0; i < numRows; i++) {
@@ -121,6 +131,50 @@ const UploadForm = () => {
     );
   };
 
+  const renderVolumePredictions = () => {
+    if (!uploadedData || !uploadedData.volumen_predictions) {
+      return null;
+    }
+
+    const volumePredictions = uploadedData.volumen_predictions;
+
+    return (
+      <table className="styled-table">
+        <thead>
+          <tr>
+            {Object.keys(volumePredictions).map(key => (
+              <th key={key}>{key}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {Object.values(volumePredictions).map((value, index) => (
+              <td key={index}>{value}</td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    );
+  };
+
+  const renderScatterPlot = () => {
+    if (!uploadedData || !uploadedData.predictions_scatter) {
+      return null;
+    }
+
+    const scatterData = uploadedData.predictions_scatter;
+
+    console.log('Scatter Data:', scatterData); // Verifica el formato
+
+    return (
+      <div className="scatter-plot-container">
+        <h2 className="section-title">Predictions Scatter Plot</h2>
+        <ScatterPlot data={scatterData} />
+      </div>
+    );
+  };
+
   return (
     <div className="upload-form">
       <div className="banner">
@@ -142,12 +196,16 @@ const UploadForm = () => {
         </div>
       </div>
       <div className="form-container">
-        <label className="file-label">Load your CSV file:</label>
+        <label className="file-label">Load your Region 1 CSV file:</label>
         <input type="file" onChange={handleFileChange} />
-        <button onClick={handleUpload}>Upload</button>
+        <button onClick={handleUpload} disabled={loading}>
+          {loading ? 'Uploading...' : 'Upload'}
+        </button>
       </div>
       
-      {uploadedData && (
+      {loading && <p>Loading data...</p>}
+      
+      {uploadedData && !loading && (
         <div className="data-analysis-section">
           <h2 className="section-title">Dataset Analysis Overview</h2>
           <div className="tables-container">
@@ -170,6 +228,10 @@ const UploadForm = () => {
               heatmapData={uploadedData.heatmap_data}
             />
           </div>
+          <h2 className="section-title">Volume Predictions</h2>
+          {renderVolumePredictions()}
+          {/* Solo debe haber una sección para el gráfico de dispersión */}
+          {renderScatterPlot()}
         </div>
       )}
     </div>

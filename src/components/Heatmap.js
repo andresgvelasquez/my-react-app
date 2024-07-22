@@ -6,10 +6,10 @@ const Heatmap = ({ data }) => {
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
-    const margin = { top: 60, right: 60, bottom: 80, left: 80 }; // Aumenta el margen derecho
-    const cellSize = 50; // Tamaño de cada celda del heatmap
-    const width = 6 * cellSize + margin.left + margin.right; // Incrementa el ancho
-    const height = 6 * cellSize + margin.top + margin.bottom; // Incrementa la altura
+    const margin = { top: 60, right: 60, bottom: 80, left: 80 };
+    const cellSize = 50;
+    const width = 6 * cellSize + margin.left + margin.right;
+    const height = 6 * cellSize + margin.top + margin.bottom;
 
     // Limpia el contenido del SVG
     svg.selectAll('*').remove();
@@ -20,12 +20,12 @@ const Heatmap = ({ data }) => {
 
     // Configura escalas y ejes
     const xScale = d3.scaleBand()
-      .domain(xLabels) // Etiquetas en lugar de índices
+      .domain(xLabels)
       .range([0, width - margin.left - margin.right])
       .padding(0.05);
 
     const yScale = d3.scaleBand()
-      .domain(yLabels) // Etiquetas en lugar de índices
+      .domain(yLabels)
       .range([height - margin.top - margin.bottom, 0])
       .padding(0.05);
 
@@ -55,7 +55,7 @@ const Heatmap = ({ data }) => {
       .attr('text-anchor', 'middle')
       .text(d => d.value.toFixed(2))
       .style('fill', '#000')
-      .style('font-size', '12px'); // Ajusta el tamaño de la fuente si es necesario
+      .style('font-size', '12px');
 
     // Agrega ejes X e Y
     svg.append('g')
@@ -71,7 +71,9 @@ const Heatmap = ({ data }) => {
   }, [data]);
 
   return (
-    <svg ref={svgRef} width="100%" height="100%" viewBox={`0 0 ${6 * 50 + 80 + 60} ${6 * 50 + 60 + 80}`}></svg> // Ajusta el viewBox
+    <div className="heatmap-container">
+      <svg ref={svgRef} className="heatmap-graph" viewBox={`0 0 ${6 * 50 + 80 + 60} ${6 * 50 + 60 + 80}`}></svg>
+    </div>
   );
 };
 

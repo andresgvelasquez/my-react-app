@@ -119,18 +119,18 @@
 
 /* Estilo para cada gráfico */
 .chart {
-  flex: 1 1 30%; /* Ajusta el tamaño de los gráficos */
+  flex: 1 1 45%; /* Ajusta el tamaño de los gráficos para que ocupen más espacio y se alineen mejor */
   margin: 10px;
-  max-width: 30%; /* Permite que el gráfico se ajuste al contenedor */
+  max-width: 45%; /* Permite que el gráfico se ajuste al contenedor */
   height: auto; /* Ajusta la altura automáticamente para evitar gráficos alargados */
   min-height: 400px; /* Fija una altura mínima para evitar gráficos demasiado pequeños */
   overflow: hidden; /* Oculta el contenido que se desborda */
+  margin-bottom: 10px; /* Reduce el espacio entre el gráfico de heatmap y la siguiente sección */
 }
 
-/* Estilo para los títulos de las secciones */
 .section-title {
-  margin-top: 20px;
-  font-size: 1.5em;
+  font-size: 1.5em; /* Ajusta el tamaño de la fuente del título */
+  margin-bottom: 10px; /* Reduce el espacio debajo del título de la sección */
   color: #004d00; /* Verde oscuro para el título de sección */
 }
 
@@ -146,25 +146,33 @@
 }
 
 /* Estilo para el contenedor del heatmap */
-/* Estilo para el contenedor del heatmap */
 .heatmap-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 110%;
+  flex-direction: column; /* Alinea los elementos en una columna */
+  align-items: center; /* Centra horizontalmente */
+  width: 100%; /* Ajusta el ancho al 100% del contenedor */
   height: auto; /* Ajusta la altura automáticamente si es necesario */
-  min-height: 825px; /* Altura mínima para evitar que se corte */
-  padding: 10px;
+  padding: 0px;
   box-sizing: border-box;
   overflow: auto; /* Permite el desplazamiento si el contenido es más grande */
-  margin-top: -230px; /* Ajusta la posición vertical hacia abajo para alinearlo con el número 200 */
+  margin-top: 0px; /* Espacio arriba del contenedor */
+  margin-bottom: 0px; /* Espacio abajo del contenedor (ajustado) */
 }
+
+/* Estilo para el gráfico heatmap */
+.heatmap-graph {
+  width: 100%; /* Ajusta el ancho del gráfico al 100% del contenedor */
+  height: auto; /* Ajusta la altura automáticamente */
+  max-width: 1200px; /* Ajusta el tamaño máximo del gráfico */
+  margin-bottom: 10px; /* Reduce el espacio debajo de cada gráfico */
+}
+
 
 /* Ajustes adicionales para el SVG del heatmap */
 .heatmap-container svg {
-  width: 110%; /* Asegúrate de que el SVG ocupe todo el ancho del contenedor */
+  width: 100%; /* Asegúrate de que el SVG ocupe todo el ancho del contenedor */
   height: auto; /* Ajusta la altura para mantener la relación de aspecto */
-  max-width: 110%; /* Asegura que el SVG no se expanda más allá de su contenedor */
+  max-width: 100%; /* Asegura que el SVG no se expanda más allá de su contenedor */
   object-fit: contain; /* Ajusta el contenido del SVG dentro del contenedor sin distorsión */
 }
 
@@ -182,4 +190,32 @@
   max-width: 100%; /* Asegura que no se expanda más allá de su contenedor */
   height: 400px; /* Altura fija para evitar desbordamiento */
   overflow: hidden; /* Oculta el contenido que se desborda */
+  margin-bottom: 10px; /* Reduce el espacio debajo de cada gráfico */
+}
+
+/* Ajuste adicional para el espaciado entre gráficos y secciones inferiores */
+.charts-container {
+  margin-bottom: 20px; /* Reduce el espacio debajo del contenedor de gráficos */
+}
+
+.div-chart-container {
+  width: 100%; /* Ajusta el ancho al 100% del contenedor padre */
+  max-width: 1000px; /* Establece un ancho máximo para evitar que se expanda demasiado */
+  margin: 0 auto; /* Centra horizontalmente */
+  padding: 10px; /* Agrega un poco de relleno */
+  box-sizing: border-box; /* Incluye el relleno en el cálculo del ancho */
+}
+
+/* Estilo para el contenedor del gráfico en sí */
+.div-chart {
+  width: 100%; /* Ajusta el ancho al 100% del contenedor padre */
+  height: 400px; /* Ajusta la altura del gráfico, cámbiala si es necesario */
+  max-height: 400px; /* Establece una altura máxima para evitar que el gráfico se expanda demasiado */
+  overflow: hidden; /* Oculta el contenido que se desborda */
+}
+
+.scatter-plot-container {
+  width: 100%;
+  height: 400px; /* Ajusta el tamaño según tus necesidades */
+  margin: 20px 0;
 }

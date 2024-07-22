@@ -5,7 +5,6 @@ import Heatmap from './Heatmap';
 import './UploadForm.css';
 
 const DataVisualization = ({ histogramData, boxplotData, heatmapData }) => {
-
   let processedHeatmapData;
   if (typeof heatmapData === 'string') {
     try {
